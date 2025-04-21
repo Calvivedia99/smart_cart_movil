@@ -1,0 +1,1 @@
+ D:\\Proyectos\\Sistemas\ De\ Informacion\ 2\\Primer\ Parcial\\SmartCart\\smart_cart_movil\\.dart_tool\\flutter_build\\a8dde2cfe82ecfbcbbd9cf7e71253e5e\\dart_build_result.json: 

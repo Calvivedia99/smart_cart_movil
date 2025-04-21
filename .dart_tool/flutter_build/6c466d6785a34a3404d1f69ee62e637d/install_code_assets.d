@@ -1,0 +1,1 @@
+ D:\\Proyectos\\Sistemas\ De\ Informacion\ 2\\Primer\ Parcial\\SmartCart\\smart_cart_movil\\.dart_tool\\flutter_build\\6c466d6785a34a3404d1f69ee62e637d\\native_assets.json: 

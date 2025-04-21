@@ -1,0 +1,82 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:smart_cart_movil/data/models/cliente_model.dart';
+import 'package:smart_cart_movil/data/services/api_config.dart';
+
+class ClienteService {
+  static final String _baseUrl = '${ApiConfig.baseUrl}/clientes';
+
+  // 🔹 Listar todos los clientes
+  static Future<List<Cliente>> getAllClientes() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body)['data'];
+        return data.map((e) => Cliente.fromJson(e)).toList();
+      }
+      throw Exception("Error al obtener clientes: ${response.statusCode}");
+    } catch (e) {
+      throw Exception("Error de red: $e");
+    }
+  }
+
+  // 🔹 Obtener cliente por ID
+  static Future<Cliente> getClienteById(int id) async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/$id/'));
+      if (response.statusCode == 200) {
+        return Cliente.fromJson(jsonDecode(response.body));
+      }
+      throw Exception("Cliente no encontrado: ${response.statusCode}");
+    } catch (e) {
+      throw Exception("Error de red: $e");
+    }
+  }
+
+  // 🔹 Crear un nuevo cliente
+  static Future<Cliente> createCliente(Cliente cliente) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/crear/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(cliente.toJson()),
+      );
+      if (response.statusCode == 201) {
+        return Cliente.fromJson(jsonDecode(response.body));
+      }
+      throw Exception("Error al crear cliente: ${response.statusCode}");
+    } catch (e) {
+      throw Exception("Error de red: $e");
+    }
+  }
+
+  // 🔹 Actualizar cliente existente
+  static Future<Cliente> updateCliente(int id, Cliente cliente) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/actualizar/$id/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(cliente.toJson()),
+      );
+      if (response.statusCode == 200) {
+        return Cliente.fromJson(jsonDecode(response.body));
+      }
+      throw Exception("Error al actualizar cliente: ${response.statusCode}");
+    } catch (e) {
+      throw Exception("Error de red: $e");
+    }
+  }
+
+  // 🔹 Eliminar cliente por ID
+  static Future<bool> deleteCliente(int id) async {
+    try {
+      final response = await http.delete(Uri.parse('$_baseUrl/eliminar/$id/'));
+      if (response.statusCode == 204) {
+        return true;
+      }
+      throw Exception("Error al eliminar cliente: ${response.statusCode}");
+    } catch (e) {
+      throw Exception("Error de red: $e");
+    }
+  }
+}

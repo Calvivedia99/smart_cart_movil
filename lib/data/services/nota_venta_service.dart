@@ -1,0 +1,76 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:smart_cart_movil/data/models/nota_venta_model.dart';
+import 'package:smart_cart_movil/data/services/api_config.dart';
+
+class NotaVentaService {
+  static final String _baseUrl = '${ApiConfig.baseUrl}/notas-venta';
+
+  // Listar todas las notas de venta
+  static Future<List<NotaVenta>> listar() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/'));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = jsonDecode(response.body)['data'];
+        return jsonData.map((e) => NotaVenta.fromJson(e)).toList();
+      } else {
+        throw Exception('Error al listar notas de venta: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error de red: $e');
+    }
+  }
+
+  // Obtener una nota de venta por ID
+  static Future<NotaVenta?> obtener(int id) async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/$id/'));
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body)['data'];
+        return NotaVenta.fromJson(jsonData);
+      } else {
+        throw Exception('Nota de venta no encontrada: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error de red: $e');
+    }
+  }
+
+  // Crear una nueva nota de venta
+  static Future<bool> crear(NotaVenta notaVenta) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/crear/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(notaVenta.toJson()),
+      );
+      return response.statusCode == 201;
+    } catch (e) {
+      throw Exception('Error al crear la nota de venta: $e');
+    }
+  }
+
+  // Actualizar una nota de venta
+  static Future<bool> actualizar(int id, NotaVenta notaVenta) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/actualizar/$id/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(notaVenta.toJson()),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      throw Exception('Error al actualizar la nota de venta: $e');
+    }
+  }
+
+  // Eliminar una nota de venta
+  static Future<bool> eliminar(int id) async {
+    try {
+      final response = await http.delete(Uri.parse('$_baseUrl/eliminar/$id/'));
+      return response.statusCode == 204;
+    } catch (e) {
+      throw Exception('Error al eliminar la nota de venta: $e');
+    }
+  }
+}
